@@ -66,6 +66,14 @@
         </button>
 
 
+        <div class="user-box">
+            <span id="userEmail">Carregando...</span>
+            <button class="logout-btn" id="logoutBtn" title="Sair">
+                <i data-lucide="log-out"></i>
+            </button>
+        </div>
+
+
     </aside>
 
 
@@ -423,6 +431,9 @@
 lucide.createIcons();
 
 </script>
+<script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="supabase-config.js"></script>
+<script src="auth-guard.js"></script>
 <script src="script.js"></script>
 </body>
 

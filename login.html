@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Entrar · Finance Manager</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+</head>
+
+<body>
+
+
+<div class="auth-wrapper">
+
+    <div class="auth-card">
+
+        <div class="auth-logo">
+            <i data-lucide="wallet"></i>
+            <span>Finanças</span>
+        </div>
+
+
+        <div class="auth-tabs">
+            <button type="button" class="auth-tab active" data-tab="login">Entrar</button>
+            <button type="button" class="auth-tab" data-tab="signup">Criar conta</button>
+        </div>
+
+
+        <!-- LOGIN -->
+
+        <form id="loginForm" class="auth-form active">
+
+            <div class="form-group">
+                <label for="loginEmail">E-mail</label>
+                <input type="email" id="loginEmail" placeholder="voce@email.com" required>
+            </div>
+
+            <div class="form-group">
+                <label for="loginPassword">Senha</label>
+                <input type="password" id="loginPassword" placeholder="••••••••" required>
+            </div>
+
+            <p class="form-error" id="loginError"></p>
+
+            <button type="submit" class="btn-primary auth-submit" id="loginSubmit">
+                Entrar
+            </button>
+
+        </form>
+
+
+        <!-- CADASTRO -->
+
+        <form id="signupForm" class="auth-form">
+
+            <div class="form-group">
+                <label for="signupName">Nome</label>
+                <input type="text" id="signupName" placeholder="Seu nome" required>
+            </div>
+
+            <div class="form-group">
+                <label for="signupEmail">E-mail</label>
+                <input type="email" id="signupEmail" placeholder="voce@email.com" required>
+            </div>
+
+            <div class="form-group">
+                <label for="signupPassword">Senha</label>
+                <input type="password" id="signupPassword" placeholder="Mínimo 6 caracteres" minlength="6" required>
+            </div>
+
+            <p class="form-error" id="signupError"></p>
+            <p class="form-success" id="signupSuccess"></p>
+
+            <button type="submit" class="btn-primary auth-submit" id="signupSubmit">
+                Criar conta
+            </button>
+
+        </form>
+
+
+    </div>
+
+</div>
+
+
+<script>lucide.createIcons();</script>
+<script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="supabase-config.js"></script>
+<script src="login.js"></script>
+</body>
+
+</html>

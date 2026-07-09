@@ -139,19 +139,90 @@ goToLancamentos.addEventListener("click", () => goToPage("lancamentos"));
 
 
 // ===============================
-// DADOS FINANCEIROS
+// DADOS FINANCEIROS (SUPABASE)
 // ===============================
 
-let transactions = JSON.parse(
-    localStorage.getItem("transactions")
-) || [];
+let transactions = [];
 
 
-function saveTransactions() {
-    localStorage.setItem(
-        "transactions",
-        JSON.stringify(transactions)
-    );
+// Converte o registro do banco (snake_case, tipos do Postgres)
+// para o formato que o resto do script já usa
+function mapFromSupabase(row) {
+    return {
+        id: row.id,
+        description: row.description,
+        value: Number(row.value),
+        type: row.type,
+        category: row.category,
+        card: row.card || "",
+        date: row.date,             // já vem como "yyyy-mm-dd"
+        createdAt: row.created_at
+    };
+}
+
+
+async function loadTransactions() {
+
+    const { data, error } = await supabaseClient
+        .from("transactions")
+        .select("*")
+        .order("date", { ascending: false })
+        .order("created_at", { ascending: false });
+
+    if (error) {
+        console.error("Erro ao carregar lançamentos:", error);
+        alert("Não foi possível carregar seus lançamentos. Tente recarregar a página.");
+        return;
+    }
+
+    transactions = data.map(mapFromSupabase);
+}
+
+
+async function insertTransaction(payload) {
+
+    const { error } = await supabaseClient
+        .from("transactions")
+        .insert(payload);
+
+    if (error) {
+        formError.textContent = "Erro ao salvar: " + error.message;
+        return false;
+    }
+
+    return true;
+}
+
+
+async function updateTransactionRemote(id, payload) {
+
+    const { error } = await supabaseClient
+        .from("transactions")
+        .update(payload)
+        .eq("id", id);
+
+    if (error) {
+        formError.textContent = "Erro ao salvar: " + error.message;
+        return false;
+    }
+
+    return true;
+}
+
+
+async function deleteTransactionRemote(id) {
+
+    const { error } = await supabaseClient
+        .from("transactions")
+        .delete()
+        .eq("id", id);
+
+    if (error) {
+        alert("Erro ao excluir: " + error.message);
+        return false;
+    }
+
+    return true;
 }
 
 
@@ -170,17 +241,10 @@ function formatMoney(value) {
 }
 
 
-// "2026-07-08" -> "08/07/2026"
-function formatDateForDisplay(isoDate) {
+// "2026-07-08" -> "08/07/2026" (usado só para exibir na tabela)
+function formatDateBR(isoDate) {
     let [year, month, day] = isoDate.split("-");
     return `${day}/${month}/${year}`;
-}
-
-
-// "08/07/2026" -> Date object (para comparar/ordenar)
-function parseDisplayDate(displayDate) {
-    let [day, month, year] = displayDate.split("/");
-    return new Date(`${year}-${month}-${day}`);
 }
 
 
@@ -340,7 +404,7 @@ function buildRow(transaction, showCardColumn) {
         <td>${escapeHtml(transaction.description)}</td>
         <td>${escapeHtml(transaction.category || "Outros")}</td>
         ${cardCell}
-        <td>${transaction.date}</td>
+        <td>${formatDateBR(transaction.date)}</td>
         <td class="${transaction.type}">
             ${transaction.type === "income" ? "+" : "-"}
             ${formatMoney(transaction.value)}
@@ -360,7 +424,10 @@ function buildRow(transaction, showCardColumn) {
 
 
 function sortedByDateDesc(list) {
-    return list.slice().sort((a, b) => b.id - a.id);
+    return list.slice().sort((a, b) => {
+        if (a.date !== b.date) return a.date < b.date ? 1 : -1;
+        return new Date(a.createdAt) < new Date(b.createdAt) ? 1 : -1;
+    });
 }
 
 
@@ -427,14 +494,12 @@ function getFilteredLancamentos() {
             return false;
         }
 
-        if (filterStart.value) {
-            let start = new Date(filterStart.value);
-            if (parseDisplayDate(t.date) < start) return false;
+        if (filterStart.value && t.date < filterStart.value) {
+            return false;
         }
 
-        if (filterEnd.value) {
-            let end = new Date(filterEnd.value);
-            if (parseDisplayDate(t.date) > end) return false;
+        if (filterEnd.value && t.date > filterEnd.value) {
+            return false;
         }
 
         return true;
@@ -594,9 +659,7 @@ function openModal(transaction) {
         valueInput.value = transaction.value;
         categoryInput.value = transaction.category || "";
         cardInput.value = transaction.card || "";
-
-        let [day, month, year] = transaction.date.split("/");
-        dateInput.value = `${year}-${month}-${day}`;
+        dateInput.value = transaction.date;
 
         setSelectedType(transaction.type);
 
@@ -655,15 +718,17 @@ document.addEventListener("keydown", (e) => {
 // SALVAR (CRIAR OU EDITAR)
 // ===============================
 
-transactionForm.addEventListener("submit", (e) => {
+const submitBtn = document.getElementById("submitBtn");
+
+transactionForm.addEventListener("submit", async (e) => {
 
     e.preventDefault();
 
     let description = descriptionInput.value.trim();
     let value = Number(valueInput.value);
-    let date = dateInput.value;
+    let date = dateInput.value; // já vem em "yyyy-mm-dd"
     let category = categoryInput.value.trim() || "Outros";
-    let card = cardInput.value.trim();
+    let card = cardInput.value.trim() || null;
     let id = transactionIdInput.value;
 
     if (!description) {
@@ -681,36 +746,22 @@ transactionForm.addEventListener("submit", (e) => {
         return;
     }
 
-    let displayDate = formatDateForDisplay(date);
+    formError.textContent = "";
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Salvando...";
 
-    if (id) {
-        let index = transactions.findIndex(t => t.id === Number(id));
+    let payload = { description, value, type: selectedType, category, card, date };
 
-        if (index !== -1) {
-            transactions[index] = {
-                ...transactions[index],
-                description,
-                value,
-                type: selectedType,
-                category,
-                card,
-                date: displayDate
-            };
-        }
+    let ok = id
+        ? await updateTransactionRemote(id, payload)
+        : await insertTransaction(payload);
 
-    } else {
-        transactions.push({
-            id: Date.now(),
-            description,
-            value,
-            type: selectedType,
-            category,
-            card,
-            date: displayDate
-        });
-    }
+    submitBtn.disabled = false;
+    submitBtn.textContent = "Salvar";
 
-    saveTransactions();
+    if (!ok) return;
+
+    await loadTransactions();
     renderAll();
     closeModal();
 });
@@ -726,13 +777,13 @@ document.addEventListener("click", (e) => {
     let deleteBtn = e.target.closest(".delete-btn");
 
     if (editBtn) {
-        let id = Number(editBtn.dataset.id);
+        let id = editBtn.dataset.id;
         let transaction = transactions.find(t => t.id === id);
         if (transaction) openModal(transaction);
     }
 
     if (deleteBtn) {
-        idPendingDelete = Number(deleteBtn.dataset.id);
+        idPendingDelete = deleteBtn.dataset.id;
         confirmOverlay.classList.add("open");
     }
 });
@@ -750,12 +801,22 @@ confirmOverlay.addEventListener("click", (e) => {
     if (e.target === confirmOverlay) closeConfirm();
 });
 
-confirmDelete.addEventListener("click", () => {
+confirmDelete.addEventListener("click", async () => {
 
     if (idPendingDelete !== null) {
-        transactions = transactions.filter(t => t.id !== idPendingDelete);
-        saveTransactions();
-        renderAll();
+
+        confirmDelete.disabled = true;
+        confirmDelete.textContent = "Excluindo...";
+
+        let ok = await deleteTransactionRemote(idPendingDelete);
+
+        confirmDelete.disabled = false;
+        confirmDelete.textContent = "Excluir";
+
+        if (ok) {
+            await loadTransactions();
+            renderAll();
+        }
     }
 
     closeConfirm();
@@ -763,8 +824,42 @@ confirmDelete.addEventListener("click", () => {
 
 
 // ===============================
+// USUÁRIO / LOGOUT
+// ===============================
+
+const userEmailEl = document.getElementById("userEmail");
+const logoutBtn = document.getElementById("logoutBtn");
+
+async function setupUserInfo() {
+
+    const { data: { user } } = await supabaseClient.auth.getUser();
+
+    if (!user) return;
+
+    let name = user.user_metadata?.full_name || user.email.split("@")[0];
+    PAGE_INFO.dashboard.title = `Olá, ${name} `;
+
+    if (userEmailEl) userEmailEl.textContent = user.email;
+
+    // Se a página inicial (dashboard) já está visível, atualiza o texto agora
+    if (pageTitle && document.getElementById("page-dashboard").classList.contains("active")) {
+        pageTitle.textContent = PAGE_INFO.dashboard.title;
+    }
+}
+
+logoutBtn.addEventListener("click", async () => {
+    await supabaseClient.auth.signOut();
+    window.location.href = "login.html";
+});
+
+
+// ===============================
 // INICIAR SISTEMA
 // ===============================
 
-renderDashboard();
-populateFormDatalists();
+(async function init() {
+    await setupUserInfo();
+    await loadTransactions();
+    renderDashboard();
+    populateFormDatalists();
+})();

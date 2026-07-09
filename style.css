@@ -1,0 +1,2116 @@
+/* ======================================
+   FINANCE MANAGER
+   Modern Financial Dashboard
+====================================== */
+
+
+/* RESET */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Inter", Arial, sans-serif;
+}
+
+
+
+/* VARIÁVEIS */
+
+:root {
+
+    --background: #080b18;
+
+    --sidebar: #10162f;
+
+    --card: rgba(255,255,255,0.08);
+
+    --card-hover: rgba(255,255,255,0.13);
+
+
+    --primary: #8b5cf6;
+
+    --secondary: #06b6d4;
+
+
+    --green: #10b981;
+
+    --red: #f43f5e;
+
+
+    --text: #f8fafc;
+
+    --text-secondary: #94a3b8;
+
+}
+
+
+
+/* BODY */
+
+body {
+
+    background:
+
+    radial-gradient(
+circle at top left,
+#312e81,
+transparent 35%
+),
+
+#080b18;
+
+
+    color: var(--text);
+
+    min-height: 100vh;
+
+}
+
+
+
+
+/* CONTAINER PRINCIPAL */
+
+.container {
+
+    display: flex;
+
+    min-height: 100vh;
+
+}
+
+
+
+
+
+/* ==============================
+   SIDEBAR
+================================*/
+
+
+.sidebar {
+
+
+    width: 260px;
+
+
+    background:
+
+
+    linear-gradient(
+        160deg,
+        #17133b,
+        #08101f
+    );
+
+
+    padding: 25px 18px;
+
+
+    display: flex;
+
+
+    flex-direction: column;
+
+
+    position: relative;
+
+
+    transition: .4s ease;
+
+
+    border-right:
+
+    1px solid rgba(255,255,255,.08);
+
+
+    box-shadow:
+
+    10px 0 30px rgba(0,0,0,.25);
+
+
+}
+
+
+
+
+/* LOGO */
+
+
+.logo {
+
+
+    display:flex;
+
+
+    align-items:center;
+
+
+    gap:12px;
+
+
+    font-size:20px;
+
+
+    font-weight:700;
+
+
+    margin-bottom:40px;
+
+
+    white-space:nowrap;
+
+
+    animation:
+
+    floating 3s ease-in-out infinite;
+
+
+}
+
+
+
+.logo svg {
+
+
+    width:28px;
+
+
+    color:#06b6d4;
+
+
+    animation:
+
+    pulseIcon 2s infinite;
+
+
+}
+
+
+
+
+
+/* MENU */
+
+
+nav {
+
+
+    display:flex;
+
+
+    flex-direction:column;
+
+
+    gap:10px;
+
+
+}
+
+
+
+
+nav a {
+
+
+    height:50px;
+
+
+    display:flex;
+
+
+    align-items:center;
+
+
+    gap:15px;
+
+
+    padding:0 15px;
+
+
+    color:var(--text-secondary);
+
+
+    text-decoration:none;
+
+
+    border-radius:12px;
+
+
+    cursor:pointer;
+
+
+    transition:.3s;
+
+
+}
+
+
+
+
+
+nav a:hover {
+
+
+    background:
+
+    rgba(255,255,255,.08);
+
+
+    color:white;
+
+
+    transform:
+
+    translateX(5px);
+
+
+}
+
+
+
+
+nav a.active {
+
+
+    background:
+
+
+    linear-gradient(
+        90deg,
+        #8b5cf6,
+        #06b6d4
+    );
+
+
+    color:white;
+
+
+}
+
+
+
+
+/* BOTÃO MENU */
+
+
+.toggle-menu {
+
+
+    margin-top:auto;
+
+
+    width:40px;
+
+
+    height:40px;
+
+
+    border:none;
+
+
+    border-radius:50%;
+
+
+    background:#1e293b;
+
+
+    color:white;
+
+
+    cursor:pointer;
+
+
+    transition:.3s;
+
+
+}
+
+
+
+.toggle-menu:hover {
+
+
+    transform:
+
+    rotate(180deg);
+
+
+    background:
+
+    var(--primary);
+
+
+}
+
+/* ==============================
+   CONTEÚDO PRINCIPAL
+================================*/
+
+
+main {
+
+    flex:1;
+
+    padding:35px;
+
+    overflow:hidden;
+
+}
+
+
+
+
+
+/* ==============================
+   HEADER
+================================*/
+
+
+header {
+
+
+    display:flex;
+
+
+    justify-content:space-between;
+
+
+    align-items:center;
+
+
+    margin-bottom:35px;
+
+
+    animation:
+
+    fadeDown .8s ease;
+
+
+}
+
+
+
+header h1 {
+
+
+    font-size:32px;
+
+
+    font-weight:700;
+
+
+}
+
+
+
+header p {
+
+
+    color:
+
+    var(--text-secondary);
+
+
+    margin-top:8px;
+
+
+}
+
+
+
+
+
+/* BOTÃO NOVA MOVIMENTAÇÃO */
+
+
+.add {
+
+
+    background:
+
+
+    linear-gradient(
+        90deg,
+        #8b5cf6,
+        #06b6d4
+    );
+
+
+    color:white;
+
+
+    border:none;
+
+
+    padding:
+
+    14px 22px;
+
+
+    border-radius:12px;
+
+
+    font-size:15px;
+
+
+    cursor:pointer;
+
+
+    transition:.3s;
+
+
+    animation:
+
+
+    buttonPulse 3s infinite;
+
+
+}
+
+
+
+
+
+.add:hover {
+
+
+    transform:
+
+
+    translateY(-3px);
+
+
+}
+
+
+
+
+
+/* ==============================
+   CARDS FINANCEIROS
+================================*/
+
+
+.cards {
+
+
+    display:grid;
+
+
+    grid-template-columns:
+
+    repeat(3,1fr);
+
+
+    gap:25px;
+
+
+    margin-bottom:30px;
+
+
+}
+
+
+
+
+
+.card {
+
+
+    background:
+
+
+    linear-gradient(
+
+        145deg,
+
+        rgba(255,255,255,.12),
+
+        rgba(255,255,255,.04)
+
+    );
+
+
+    border:
+
+
+    1px solid rgba(255,255,255,.08);
+
+
+    backdrop-filter:
+
+    blur(15px);
+
+
+
+    padding:25px;
+
+
+    border-radius:20px;
+
+
+    position:relative;
+
+
+    overflow:hidden;
+
+
+    animation:
+
+
+    cardShow .8s ease;
+
+
+    transition:.3s;
+
+
+    box-shadow:
+
+
+    0 20px 40px rgba(0,0,0,.25);
+
+
+}
+
+
+
+
+
+.card:hover {
+
+
+    background:
+
+    var(--card-hover);
+
+
+    transform:
+
+
+    translateY(-10px)
+
+    scale(1.02);
+
+
+
+    box-shadow:
+
+
+    0 25px 50px
+
+    rgba(139,92,246,.25);
+
+
+}
+
+
+
+
+
+/* CÍRCULO DECORATIVO */
+
+
+.card::after {
+
+
+    content:"";
+
+
+    position:absolute;
+
+
+    width:100px;
+
+
+    height:100px;
+
+
+    right:-30px;
+
+
+    top:-30px;
+
+
+    background:
+
+
+    rgba(255,255,255,.05);
+
+
+    border-radius:50%;
+
+
+}
+
+
+
+
+
+/* ÍCONES DOS CARDS */
+
+
+.icon {
+
+
+    width:45px;
+
+
+    height:45px;
+
+
+    display:flex;
+
+
+    align-items:center;
+
+
+    justify-content:center;
+
+
+    border-radius:12px;
+
+
+    background:#334155;
+
+
+    margin-bottom:20px;
+
+
+}
+
+
+
+
+
+.icon svg {
+
+
+    width:22px;
+
+
+    color:
+
+    var(--secondary);
+
+
+}
+
+
+
+
+
+/* CORES INDIVIDUAIS */
+
+
+.balance .icon {
+
+
+    background:
+
+
+    rgba(6,182,212,.15);
+
+
+}
+
+
+
+
+.income .icon {
+
+
+    background:
+
+
+    rgba(16,185,129,.15);
+
+
+}
+
+
+
+
+
+.income .icon svg {
+
+
+    color:
+
+    var(--green);
+
+
+}
+
+
+
+
+.expense .icon {
+
+
+    background:
+
+
+    rgba(244,63,94,.15);
+
+
+}
+
+
+
+
+
+.expense .icon svg {
+
+
+    color:
+
+    var(--red);
+
+
+}
+
+
+
+
+
+/* TEXTOS DOS CARDS */
+
+
+.card p {
+
+
+    color:
+
+    var(--text-secondary);
+
+
+    font-size:15px;
+
+
+}
+
+
+
+
+
+.card h2 {
+
+
+    margin-top:10px;
+
+
+    font-size:28px;
+
+
+    letter-spacing:.5px;
+
+
+}
+
+
+
+
+
+.balance h2 {
+
+
+    color:white;
+
+
+}
+
+
+
+
+
+.income h2 {
+
+
+    color:
+
+    var(--green);
+
+
+}
+
+
+
+
+
+.expense h2 {
+
+
+    color:
+
+    var(--red);
+
+
+}
+
+/* ==============================
+   ÁREA DE CONTEÚDO
+================================*/
+
+
+.content {
+
+
+    display:grid;
+
+
+    grid-template-columns:
+
+    2fr 1fr;
+
+
+    gap:25px;
+
+
+    margin-bottom:25px;
+
+
+}
+
+
+
+
+.box {
+
+
+    background:
+
+
+    var(--card);
+
+
+    border:
+
+
+    1px solid rgba(255,255,255,.06);
+
+
+    backdrop-filter:
+
+    blur(15px);
+
+
+    padding:25px;
+
+
+    border-radius:20px;
+
+
+    animation:
+
+
+    fadeUp .8s ease;
+
+
+}
+
+
+
+
+
+.box h3 {
+
+
+    font-size:18px;
+
+
+    margin-bottom:20px;
+
+
+}
+
+
+
+
+
+/* ==============================
+   TÍTULO DO GRÁFICO
+================================*/
+
+
+.title {
+
+
+    display:flex;
+
+
+    justify-content:space-between;
+
+
+    align-items:center;
+
+
+}
+
+
+
+
+
+select {
+
+
+    background:
+
+
+    rgba(255,255,255,.08);
+
+
+    color:white;
+
+
+    border:
+
+
+    1px solid rgba(255,255,255,.1);
+
+
+    padding:
+
+    8px 15px;
+
+
+    border-radius:10px;
+
+
+    outline:none;
+
+
+}
+
+
+
+
+select option {
+
+
+    background:#10162f;
+
+
+}
+
+
+
+
+
+/* ==============================
+   ÁREA DO GRÁFICO
+================================*/
+
+
+.chart-placeholder {
+
+
+    height:220px;
+
+
+    display:flex;
+
+
+    align-items:center;
+
+
+    justify-content:center;
+
+
+    color:
+
+    var(--text-secondary);
+
+
+    border:
+
+
+    2px dashed rgba(255,255,255,.15);
+
+
+    border-radius:15px;
+
+
+    margin-top:20px;
+
+
+    transition:.3s;
+
+
+}
+
+
+
+
+
+.chart-placeholder:hover {
+
+
+    border-color:
+
+    var(--secondary);
+
+
+    color:white;
+
+
+}
+
+
+
+
+
+/* ==============================
+   CATEGORIAS
+================================*/
+
+
+.category {
+
+
+    display:flex;
+
+
+    justify-content:space-between;
+
+
+    align-items:center;
+
+
+    padding:15px 0;
+
+
+    border-bottom:
+
+
+    1px solid rgba(255,255,255,.08);
+
+
+}
+
+
+
+
+
+.category:last-child {
+
+
+    border-bottom:none;
+
+
+}
+
+
+
+
+
+.category span {
+
+
+    color:
+
+    var(--text-secondary);
+
+
+}
+
+
+
+
+
+.category strong {
+
+
+    color:white;
+
+
+}
+
+
+
+
+
+/* ==============================
+   TABELA
+================================*/
+
+
+.transactions {
+
+
+    overflow:auto;
+
+
+}
+
+
+
+
+
+table {
+
+
+    width:100%;
+
+
+    border-collapse:collapse;
+
+
+}
+
+
+
+
+
+thead {
+
+
+    background:
+
+    rgba(255,255,255,.04);
+
+
+}
+
+
+
+
+
+th {
+
+
+    text-align:left;
+
+
+    padding:15px;
+
+
+    color:
+
+    var(--text-secondary);
+
+
+    font-size:14px;
+
+
+}
+
+
+
+
+
+td {
+
+
+    padding:15px;
+
+
+    border-top:
+
+
+    1px solid rgba(255,255,255,.08);
+
+
+}
+
+
+
+
+
+tbody tr {
+
+
+    transition:.3s;
+
+
+}
+
+
+
+
+
+tbody tr:hover {
+
+
+    background:
+
+
+    rgba(255,255,255,.06);
+
+
+    transform:
+
+    scale(1.01);
+
+
+}
+
+
+
+
+
+.positive {
+
+
+    color:
+
+    var(--green);
+
+
+    font-weight:600;
+
+
+}
+
+
+
+
+
+.negative {
+
+
+    color:
+
+    var(--red);
+
+
+    font-weight:600;
+
+
+}
+
+
+
+
+
+
+/* ==============================
+   ANIMAÇÕES
+================================*/
+
+
+@keyframes floating {
+
+
+    0%,100% {
+
+
+        transform:
+
+        translateY(0);
+
+
+    }
+
+
+
+    50% {
+
+
+        transform:
+
+        translateY(-6px);
+
+
+    }
+
+
+}
+
+
+
+
+
+@keyframes pulseIcon {
+
+
+    0% {
+
+
+        filter:
+
+        drop-shadow(
+        0 0 0px #06b6d4
+        );
+
+
+    }
+
+
+
+    50% {
+
+
+        filter:
+
+        drop-shadow(
+        0 0 12px #06b6d4
+        );
+
+
+    }
+
+
+
+    100% {
+
+
+        filter:
+
+        drop-shadow(
+        0 0 0px #06b6d4
+        );
+
+
+    }
+
+
+}
+
+
+
+
+
+@keyframes buttonPulse {
+
+
+    0%,100% {
+
+
+        box-shadow:
+
+        0 0 0 rgba(139,92,246,0);
+
+
+    }
+
+
+
+    50% {
+
+
+        box-shadow:
+
+        0 0 25px rgba(139,92,246,.6);
+
+
+    }
+
+
+}
+
+
+
+
+
+@keyframes fadeUp {
+
+
+    from {
+
+
+        opacity:0;
+
+
+        transform:
+
+        translateY(30px);
+
+
+    }
+
+
+
+    to {
+
+
+        opacity:1;
+
+
+        transform:
+
+        translateY(0);
+
+
+    }
+
+
+}
+
+
+
+
+
+@keyframes fadeDown {
+
+
+    from {
+
+
+        opacity:0;
+
+
+        transform:
+
+        translateY(-30px);
+
+
+    }
+
+
+
+    to {
+
+
+        opacity:1;
+
+
+        transform:
+
+        translateY(0);
+
+
+    }
+
+
+}
+
+
+
+
+
+@keyframes cardShow {
+
+
+    from {
+
+
+        opacity:0;
+
+
+        transform:
+
+        scale(.9);
+
+
+    }
+
+
+
+    to {
+
+
+        opacity:1;
+
+
+        transform:
+
+        scale(1);
+
+
+    }
+
+
+}
+
+
+
+
+
+
+/* ==============================
+   RESPONSIVIDADE
+================================*/
+
+
+@media(max-width:1100px){
+
+
+    .cards {
+
+
+        grid-template-columns:
+
+        1fr;
+
+
+    }
+
+
+
+    .content {
+
+
+        grid-template-columns:
+
+        1fr;
+
+
+    }
+
+
+}
+
+
+
+
+
+
+@media(max-width:700px){
+
+
+    .sidebar {
+
+
+        width:80px;
+
+
+    }
+
+
+
+    .logo span,
+
+
+    nav span {
+
+
+        display:none;
+
+
+    }
+
+
+
+    main {
+
+
+        padding:20px;
+
+
+    }
+
+
+
+    header {
+
+
+        flex-direction:column;
+
+
+        align-items:flex-start;
+
+
+        gap:20px;
+
+
+    }
+
+
+
+    header h1 {
+
+
+        font-size:26px;
+
+
+    }
+
+
+
+    .add {
+
+
+        width:100%;
+
+
+    }
+
+
+
+    .card h2 {
+
+
+        font-size:24px;
+
+
+    }
+
+
+
+}
+
+/* ==============================
+   RESPONSIVIDADE - MODAL / TABELA
+================================*/
+
+@media(max-width:700px){
+
+    .modal {
+        width:92%;
+        padding:22px;
+    }
+
+    .form-row {
+        grid-template-columns:1fr;
+    }
+
+    table {
+        font-size:13px;
+    }
+
+}
+
+
+/* ==============================
+   ESTADO VAZIO
+================================*/
+
+.empty-state {
+    color:var(--text-secondary);
+    text-align:center;
+    padding:20px 10px;
+    font-size:14px;
+}
+
+
+/* ==============================
+   LISTA DE CATEGORIAS (DINÂMICA)
+================================*/
+
+.category-list {
+    display:flex;
+    flex-direction:column;
+}
+
+.category-bar {
+    height:6px;
+    border-radius:6px;
+    background:rgba(255,255,255,.08);
+    overflow:hidden;
+    margin-top:8px;
+}
+
+.category-bar-fill {
+    height:100%;
+    border-radius:6px;
+    background:linear-gradient(90deg,#8b5cf6,#06b6d4);
+    transition:width .5s ease;
+}
+
+.category .category-top {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    width:100%;
+}
+
+
+/* ==============================
+   COLUNA DE AÇÕES NA TABELA
+================================*/
+
+.actions-col {
+    text-align:right;
+}
+
+td.actions {
+    text-align:right;
+    white-space:nowrap;
+}
+
+.action-btn {
+    background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.08);
+    color:var(--text-secondary);
+    width:32px;
+    height:32px;
+    border-radius:8px;
+    cursor:pointer;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    transition:.2s;
+    margin-left:6px;
+}
+
+.action-btn svg {
+    width:16px;
+    height:16px;
+}
+
+.action-btn:hover {
+    color:white;
+    background:var(--primary);
+    border-color:var(--primary);
+    transform:translateY(-2px);
+}
+
+.action-btn.delete-btn:hover {
+    background:var(--red);
+    border-color:var(--red);
+}
+
+
+/* ==============================
+   MODAL
+================================*/
+
+.modal-overlay {
+    position:fixed;
+    inset:0;
+    background:rgba(5,7,16,.65);
+    backdrop-filter:blur(4px);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:1000;
+    animation:fadeUp .25s ease;
+}
+
+.modal-overlay.open {
+    display:flex;
+}
+
+.modal {
+    width:100%;
+    max-width:440px;
+    background:linear-gradient(160deg,#171233,#0b1224);
+    border:1px solid rgba(255,255,255,.1);
+    border-radius:20px;
+    padding:28px;
+    box-shadow:0 30px 60px rgba(0,0,0,.45);
+    animation:cardShow .25s ease;
+    max-height:90vh;
+    overflow-y:auto;
+}
+
+.modal-confirm {
+    max-width:380px;
+    text-align:center;
+}
+
+.modal-confirm p {
+    color:var(--text-secondary);
+    margin:10px 0 24px;
+}
+
+.modal-header {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:22px;
+}
+
+.modal-header h3 {
+    font-size:19px;
+}
+
+.modal-close {
+    background:rgba(255,255,255,.06);
+    border:none;
+    color:var(--text-secondary);
+    width:32px;
+    height:32px;
+    border-radius:50%;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:.2s;
+}
+
+.modal-close:hover {
+    background:var(--red);
+    color:white;
+}
+
+.modal-close svg {
+    width:16px;
+    height:16px;
+}
+
+
+/* ==============================
+   FORMULÁRIO
+================================*/
+
+.form-group {
+    margin-bottom:18px;
+}
+
+.form-row {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
+}
+
+label {
+    display:block;
+    font-size:13px;
+    color:var(--text-secondary);
+    margin-bottom:8px;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="date"] {
+    width:100%;
+    background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.1);
+    color:white;
+    padding:12px 14px;
+    border-radius:10px;
+    font-size:15px;
+    outline:none;
+    transition:.2s;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus {
+    border-color:var(--primary);
+    background:rgba(255,255,255,.09);
+}
+
+input::placeholder {
+    color:rgba(148,163,184,.6);
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    filter:invert(1);
+    opacity:.6;
+    cursor:pointer;
+}
+
+
+/* ==============================
+   TOGGLE RECEITA / DESPESA
+================================*/
+
+.type-toggle {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+}
+
+.type-btn {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    padding:12px;
+    border-radius:10px;
+    border:1px solid rgba(255,255,255,.1);
+    background:rgba(255,255,255,.05);
+    color:var(--text-secondary);
+    cursor:pointer;
+    font-size:14px;
+    transition:.2s;
+}
+
+.type-btn svg {
+    width:16px;
+    height:16px;
+}
+
+.type-btn.income-btn.active {
+    background:rgba(16,185,129,.18);
+    border-color:var(--green);
+    color:var(--green);
+}
+
+.type-btn.expense-btn.active {
+    background:rgba(244,63,94,.18);
+    border-color:var(--red);
+    color:var(--red);
+}
+
+
+/* ==============================
+   BOTÕES DO MODAL
+================================*/
+
+.form-error {
+    color:var(--red);
+    font-size:13px;
+    margin-bottom:10px;
+    min-height:16px;
+}
+
+.modal-actions {
+    display:flex;
+    justify-content:flex-end;
+    gap:12px;
+    margin-top:8px;
+}
+
+.btn-primary,
+.btn-secondary,
+.btn-danger {
+    padding:12px 22px;
+    border-radius:10px;
+    border:none;
+    cursor:pointer;
+    font-size:14px;
+    font-weight:600;
+    transition:.2s;
+}
+
+.btn-primary {
+    background:linear-gradient(90deg,#8b5cf6,#06b6d4);
+    color:white;
+}
+
+.btn-primary:hover {
+    transform:translateY(-2px);
+}
+
+.btn-secondary {
+    background:rgba(255,255,255,.08);
+    color:var(--text);
+}
+
+.btn-secondary:hover {
+    background:rgba(255,255,255,.14);
+}
+
+.btn-danger {
+    background:var(--red);
+    color:white;
+}
+
+.btn-danger:hover {
+    background:#dc2645;
+    transform:translateY(-2px);
+}
+
+
+/* ==============================
+   NAVEGAÇÃO POR PÁGINAS (ABAS)
+================================*/
+
+.page {
+    display:none;
+}
+
+.page.active {
+    display:block;
+}
+
+nav a.disabled {
+    opacity:.4;
+    cursor:not-allowed;
+}
+
+nav a.disabled:hover {
+    background:none;
+    transform:none;
+    color:var(--text-secondary);
+}
+
+
+/* ==============================
+   CABEÇALHO DE BOX (título + ação)
+================================*/
+
+.box-header {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+.box-header h3 {
+    margin-bottom:0;
+}
+
+.link-btn {
+    background:none;
+    border:none;
+    color:var(--secondary);
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    transition:.2s;
+}
+
+.link-btn:hover {
+    color:white;
+    transform:translateX(3px);
+}
+
+.link-btn svg {
+    width:14px;
+    height:14px;
+}
+
+
+/* ==============================
+   FILTROS
+================================*/
+
+.filters-box {
+    margin-bottom:25px;
+}
+
+.filters-bar {
+    display:flex;
+    flex-wrap:wrap;
+    align-items:flex-end;
+    gap:16px;
+}
+
+.filter-group {
+    display:flex;
+    flex-direction:column;
+    min-width:150px;
+}
+
+.filter-group label {
+    margin-bottom:6px;
+}
+
+.filter-group select,
+.filter-group input[type="date"] {
+    background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.1);
+    color:white;
+    padding:10px 14px;
+    border-radius:10px;
+    font-size:14px;
+    outline:none;
+}
+
+.filters-bar .btn-secondary {
+    padding:10px 18px;
+    height:fit-content;
+}
+
+
+/* ==============================
+   RESPONSIVIDADE - ABAS / FILTROS
+================================*/
+
+@media(max-width:700px){
+
+    .filters-bar {
+        flex-direction:column;
+        align-items:stretch;
+    }
+
+    .filter-group {
+        min-width:0;
+    }
+
+    .box-header {
+        flex-direction:column;
+        align-items:flex-start;
+        gap:10px;
+    }
+
+}
